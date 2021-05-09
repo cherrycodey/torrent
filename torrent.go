@@ -758,7 +758,9 @@ func (t *Torrent) close() (err error) {
 		func() {
 			t.storageLock.Lock()
 			defer t.storageLock.Unlock()
-			t.storage.Close()
+			if f := t.storage.Close; f != nil {
+				f()
+			}
 		}()
 	}
 	t.iterPeers(func(p *Peer) {
